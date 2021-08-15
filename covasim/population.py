@@ -400,7 +400,7 @@ class HybridContacts:
         return contacts_list, layer_keys, clusters
 
 
-class ContactFactory():
+class ContactFactory(metaclass=ABCMeta):
     @abstractmethod
     def create_contacts(pop_size,ages,contacts, overshoot=1.2, dispersion=None,school_ages=None,work_ages=None):
         pass
