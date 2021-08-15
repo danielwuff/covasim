@@ -133,9 +133,14 @@ def validate_recorded_dates(sim, requested_dates, recorded_dates, die=True):
             print(errormsg)
     return
 
+from abc import ABCMeta, abstractmethod
 
+class ISnapshot(metaclass=ABCMeta):
+    @abstractmethod
+    def initialize(self, sim):
+        pass
 
-class snapshot(Analyzer):
+class snapshot(Analyzer, ISnapshot):
     '''
     Analyzer that takes a "snapshot" of the sim.people array at specified points
     in time, and saves them to itself. To retrieve them, you can either access
@@ -411,6 +416,18 @@ class age_histogram(Analyzer):
 
         return figs
 
+class InitializeAdapter(ISnapshot):
+
+    def __init__(self, initobj):
+        self.initobj = initobj
+
+    def initialize(self, sim):
+        self.initobj.initialize(sim)
+
+if __name__ == "__main__":
+    # using Adapter pattern to connect Layout and Contact
+    init = InitializeAdapter(age_histogram())
+    init.initialize(sim)
 
 class daily_age_stats(Analyzer):
     '''
